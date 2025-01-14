@@ -1,0 +1,7 @@
+<div *ngIf="companies$ | async as companies">
+  <ul>
+    <li *ngFor="let company of companies">{{ company.S_company }}</li>
+  </ul>
+
+  <app-ui-button (click)="register(companies[0].S_company)"></app-ui-button>
+</div>

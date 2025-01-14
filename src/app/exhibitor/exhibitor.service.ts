@@ -1,7 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { ExhibitorCompany, ExhibitorHttpResponse } from './exhibitor.model';
+import {
+  AddExhibitorHttpRequest,
+  AddExhibitorHttpResponse,
+  ExhibitorCompany,
+  ExhibitorHttpResponse,
+} from './exhibitor.model';
 
 @Injectable({ providedIn: 'root' })
 export class ExhibitorService {
@@ -16,5 +21,14 @@ export class ExhibitorService {
         {}
       )
       .pipe(map((x) => x.message));
+  }
+
+  addExhibitor(payload: AddExhibitorHttpRequest): Observable<string> {
+    return this.http
+      .post<AddExhibitorHttpResponse<string>>(
+        `${this.baseUrl}/add-exhibitor`,
+        payload
+      )
+      .pipe(map((x) => x.user_id));
   }
 }

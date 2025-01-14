@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { ExhibitorCompany } from '../exhibitor.model';
+import { AddExhibitorHttpRequest, ExhibitorCompany } from '../exhibitor.model';
 
 export const loadCompanies = createAction('[Exhibitor/API] Load Companies');
 export const loadCompaniesSuccess = createAction(
@@ -8,5 +8,18 @@ export const loadCompaniesSuccess = createAction(
 );
 export const loadCompaniesFailure = createAction(
   '[Exhibitor/API] Load Companies Failure',
+  props<{ error: any }>()
+);
+
+export const addExhibitor = createAction(
+  '[Exhibitor/API] Add Exhibitor',
+  props<{ exhibitor: AddExhibitorHttpRequest }>()
+);
+export const addExhibitorSuccess = createAction(
+  '[Exhibitor/API] Add Exhibitor Success',
+  props<{ response: any }>()
+);
+export const addExhibitorFailure = createAction(
+  '[Exhibitor/API] Add Exhibitor Failure',
   props<{ error: any }>()
 );

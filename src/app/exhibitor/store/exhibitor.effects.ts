@@ -8,6 +8,9 @@ import {
   loadCompanies,
   loadCompaniesSuccess,
   loadCompaniesFailure,
+  addExhibitorSuccess,
+  addExhibitor,
+  addExhibitorFailure,
 } from './exhibitor.actions';
 
 @Injectable()
@@ -22,6 +25,18 @@ export class ExhibitorEffects {
         this.exhibitorService.getExhibitorCompanyList().pipe(
           map((companies) => loadCompaniesSuccess({ companies })),
           catchError((error) => of(loadCompaniesFailure({ error })))
+        )
+      )
+    )
+  );
+
+  addExhibitor$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addExhibitor),
+      mergeMap((action) =>
+        this.exhibitorService.addExhibitor(action.exhibitor).pipe(
+          map((response) => addExhibitorSuccess({ response })),
+          catchError((error) => of(addExhibitorFailure({ error })))
         )
       )
     )
