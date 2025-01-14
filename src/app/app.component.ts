@@ -1,10 +1,18 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { addExhibitor, loadCompanies } from './exhibitor/store/exhibitor.actions';
-import { selectCompanies } from './exhibitor/store/exhibitor.selectors';
+import {
+  addExhibitor,
+  loadCompanies,
+  loadProvinces,
+} from './exhibitor/store/exhibitor.actions';
+import {
+  selectCompanies,
+  selectProvinces,
+} from './exhibitor/store/exhibitor.selectors';
 import { CommonModule } from '@angular/common';
 import { UiButtonComponent } from './ui/ui-button/ui-button.component';
 import { AddExhibitorHttpRequest } from './exhibitor/exhibitor.model';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -16,10 +24,15 @@ import { AddExhibitorHttpRequest } from './exhibitor/exhibitor.model';
 export class AppComponent {
   title = 'exhibitor';
   companies$;
+  provinces$;
 
   constructor(private readonly store: Store) {
     this.store.dispatch(loadCompanies());
+    this.store.dispatch(loadProvinces());
     this.companies$ = this.store.select(selectCompanies);
+    this.provinces$ = this.store
+      .select(selectProvinces)
+      .pipe(map((x) => x.slice(0, 5)));
   }
 
   register(company: string) {
@@ -33,7 +46,7 @@ export class AppComponent {
       S_country: 'test',
       S_company_on_badge: 'test',
       SB_event_fha: true,
-      SB_event_prowine: false
+      SB_event_prowine: false,
     };
 
     this.store.dispatch(addExhibitor({ exhibitor: body }));

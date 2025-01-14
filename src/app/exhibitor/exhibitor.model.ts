@@ -21,7 +21,16 @@ export interface AddExhibitorHttpRequest {
   SB_event_prowine: boolean;
 }
 
-export interface AddExhibitorHttpResponse<T>
-  extends ExhibitorHttpResponse<T> {
+export interface AddExhibitorHttpResponse<T> extends ExhibitorHttpResponse<T> {
   user_id: string;
+}
+
+export interface Province {
+  level1_active: string;
+  country: string;
+  coutry_code: string;
+  level2_active: string;
+  province: string;
+  level3_active: string;
+  city: string;
 }

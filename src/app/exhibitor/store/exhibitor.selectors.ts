@@ -29,3 +29,8 @@ export const selectLastAddExhibitorResponse = createSelector(
   selectExhibitorState,
   (state) => state.lastAddExhibitorResponse
 );
+
+export const selectProvinces = createSelector(
+  selectExhibitorState,
+  (state) => state.provinces
+);

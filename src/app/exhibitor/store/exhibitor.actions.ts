@@ -1,5 +1,9 @@
 import { createAction, props } from '@ngrx/store';
-import { AddExhibitorHttpRequest, ExhibitorCompany } from '../exhibitor.model';
+import {
+  AddExhibitorHttpRequest,
+  ExhibitorCompany,
+  Province,
+} from '../exhibitor.model';
 
 export const loadCompanies = createAction('[Exhibitor/API] Load Companies');
 export const loadCompaniesSuccess = createAction(
@@ -21,5 +25,15 @@ export const addExhibitorSuccess = createAction(
 );
 export const addExhibitorFailure = createAction(
   '[Exhibitor/API] Add Exhibitor Failure',
+  props<{ error: any }>()
+);
+
+export const loadProvinces = createAction('[Provinces/API] Load Provinces');
+export const loadProvincesSuccess = createAction(
+  '[Provinces/API] Load Provinces Success',
+  props<{ provinces: Province[] }>()
+);
+export const loadProvincesFailure = createAction(
+  '[Provinces/API] Load Provinces Failure',
   props<{ error: any }>()
 );

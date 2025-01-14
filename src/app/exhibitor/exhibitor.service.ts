@@ -6,6 +6,7 @@ import {
   AddExhibitorHttpResponse,
   ExhibitorCompany,
   ExhibitorHttpResponse,
+  Province,
 } from './exhibitor.model';
 
 @Injectable({ providedIn: 'root' })
@@ -30,5 +31,9 @@ export class ExhibitorService {
         payload
       )
       .pipe(map((x) => x.user_id));
+  }
+
+  loadProvinces(): Observable<Province[]> {
+    return this.http.get<Province[]>('/provinces.json');
   }
 }

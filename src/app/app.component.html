@@ -3,5 +3,9 @@
     <li *ngFor="let company of companies">{{ company.S_company }}</li>
   </ul>
 
+  <ul>
+    <li *ngFor="let province of provinces$|async">{{ province.country }}</li>
+  </ul>
+
   <app-ui-button (click)="register(companies[0].S_company)"></app-ui-button>
 </div>

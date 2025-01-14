@@ -6,8 +6,11 @@ import {
   addExhibitor,
   addExhibitorSuccess,
   addExhibitorFailure,
+  loadProvinces,
+  loadProvincesSuccess,
+  loadProvincesFailure,
 } from './exhibitor.actions';
-import { ExhibitorCompany } from '../exhibitor.model';
+import { ExhibitorCompany, Province } from '../exhibitor.model';
 
 export interface ExhibitorState {
   companies: ExhibitorCompany[];
@@ -17,6 +20,11 @@ export interface ExhibitorState {
   addingExhibitor: boolean;
   addExhibitorError: any;
   lastAddExhibitorResponse: any;
+
+  provinces: Province[];
+  loading: boolean;
+  error: any;
+
 }
 
 export const initialExhibitorState: ExhibitorState = {
@@ -27,6 +35,10 @@ export const initialExhibitorState: ExhibitorState = {
   addingExhibitor: false,
   addExhibitorError: null,
   lastAddExhibitorResponse: null,
+
+  provinces: [],
+  loading: false,
+  error: null
 };
 
 export const exhibitorReducer = createReducer(
@@ -63,5 +75,21 @@ export const exhibitorReducer = createReducer(
     ...state,
     addingExhibitor: false,
     addExhibitorError: error,
+  })),
+
+  on(loadProvinces, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+  on(loadProvincesSuccess, (state, { provinces }) => ({
+    ...state,
+    loading: false,
+    provinces: provinces
+  })),
+  on(loadProvincesFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error
   }))
 );
