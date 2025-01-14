@@ -1,0 +1,12 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Importing Bootstrap SCSS file. */
+$my-primary: steelblue;
+
+@use "bootstrap/scss/bootstrap" as bs with (
+  $enable-rounded: true,
+  $enable-shadows: true,
+  $enable-gradients: false,
+  $enable-transitions: true,
+  $primary: $my-primary
+);
