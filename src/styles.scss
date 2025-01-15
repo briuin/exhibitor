@@ -1,12 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* Importing Bootstrap SCSS file. */
-$my-primary: steelblue;
+$gray: rgba(110, 107, 123, 1);
+$light-gray: rgba(216, 214, 222, 1);
+$white: rgba(255, 255, 255, 1);
+$red-orange-20: rgba(253, 232, 231, 1);
+$red: rgba(255, 59, 48, 1);
+$dark-red: rgba(123, 19, 22, 1);
+$red-orange: rgba(238, 64, 54, 1);
+$orange: rgba(247, 104, 45, 1);
+$yellow: rgba(250, 175, 64, 1);
+$sand: rgba(238, 229, 210, 1);
+$fresh-mint: rgba(223, 238, 231, 1);
+$green-sheen: rgba(195, 224, 174, 1);
 
 @use "bootstrap/scss/bootstrap" as bs with (
   $enable-rounded: true,
   $enable-shadows: true,
   $enable-gradients: false,
-  $enable-transitions: true,
-  $primary: $my-primary
+  $enable-transitions: true
 );
+
+:root {
+  --corporate-red-orange: rgba(238, 64, 54, 1);
+  --corporate-orange: rgba(247, 104, 45, 1);
+  --corporate-dark-red: rgba(123, 19, 22, 1);
+  --corporate-yellow: rgba(250, 175, 64, 1);
+  --secondary-sand: rgba(238, 229, 210, 1);
+  --secondary-fresh-mint: rgba(223, 238, 231, 1);
+  --secondary-green-sheen: rgba(195, 224, 174, 1);
+}
+
+* {
+  font-family: Montserrat;
+}

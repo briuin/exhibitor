@@ -1,6 +1,6 @@
 <app-ui-card [formGroup]="group" class="mb-3">
   <div
-    class="px-1 py-1 bg-danger-subtle rounded-top--3 row justify-content-between"
+    class="px-1 py-1 bg-danger-subtle rounded-top--3 row justify-content-between m-0"
   >
     <p class="text-secondary fs-6 fw-semibold col m-0 px-3 py-2">
       Exhibitor #{{ index + 1 }}
@@ -13,7 +13,7 @@
     </p>
   </div>
 
-  <div>
+  <div class="form-body">
     <app-ui-input formControlName="email" label="Email Address"></app-ui-input>
 
     <app-ui-input

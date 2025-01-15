@@ -1,83 +1,69 @@
-<div class="position-relative bg-light row">
+<div class="position-relative bg-light">
   <div class="container-fluid py-3">
-    <p
-      class="text-danger fs-5 fw-semibold font-family-Montserrat m-0 px-3 py-2"
-    >
+    <p class="text-danger fs-5 fw-semibold m-0 px-3 py-2">
       Onsite Exhibitors Registration
     </p>
   </div>
   <form [formGroup]="form">
-    <div class="shadow col-11 justify-content-center align-items-center">
+    <div class="shadow justify-content-center align-items-center px-3">
       <app-ui-card>
-        <p
-          class="text-secondary fs-6 fw-medium font-family-Montserrat m-0 px-3 py-2"
-        >
-          Event Selection
-        </p>
-        <app-ui-radio-group formControlName="eventType" name="eventType">
-          <app-ui-radio
-            [value]="option.value"
-            *ngFor="let option of eventTypeOptions"
-            >{{ option.label }}</app-ui-radio
-          >
-        </app-ui-radio-group>
+        <div class="main-selection-body">
+          <p class="text-secondary fs-6 fw-medium">Event Selection</p>
+          <app-ui-radio-group formControlName="eventType" name="eventType">
+            <app-ui-radio
+              [value]="option.value"
+              *ngFor="let option of eventTypeOptions"
+              >{{ option.label }}</app-ui-radio
+            >
+          </app-ui-radio-group>
 
-        <div class="row">
-          <div class="col-12 row d-flex">
-            <p
-              class="text-secondary fs-6 fw-medium font-family-Montserrat col-12 m-0 px-3 py-2"
-            >
-              Company
-            </p>
-            <p
-              class="text-secondary fs-6 fw-normal font-family-Montserrat col-12 m-0 px-3 py-2"
-            >
-              If you are unable to find your company name, please approach our
-              Exhibitor Team for assistance.
-            </p>
+          <div class="row">
+            <div class="col-12 row d-flex">
+              <p class="text-secondary fs-6 fw-medium col-12">Company</p>
+              <p class="text-secondary fs-6 fw-normal col-12">
+                If you are unable to find your company name, please approach our
+                Exhibitor Team for assistance.
+              </p>
+            </div>
+            <app-ui-select
+              formControlName="company"
+              [options]="(companiesOptions$ | async)!"
+              placeholder="Please Select"
+            ></app-ui-select>
           </div>
-          <app-ui-select
-            formControlName="company"
-            [options]="(companiesOptions$ | async)!"
-            placeholder="Please Select"
-          ></app-ui-select>
         </div>
       </app-ui-card>
     </div>
 
     <app-ui-dividers></app-ui-dividers>
+    <div class="px-3">
+      <p class="text-secondary fs-6 fw-normal m-0 px-3 py-2">
+        * All fields are mandatory.
+      </p>
+      <div formArrayName="groups" class="gap-4 row">
+        <app-exhibitor-form
+          *ngFor="let group of exhibitorFormGroups; let i = index"
+          [group]="group"
+          [index]="i"
+          [provincesOptions]="(provincesOptions$ | async)!"
+          (remove)="removeGroup(i)"
+        ></app-exhibitor-form>
 
-    <p
-      class="text-secondary fs-6 fw-normal font-family-Montserrat m-0 px-3 py-2"
-    >
-      * All fields are mandatory.
-    </p>
-    <div formArrayName="groups">
-      <app-exhibitor-form
-        *ngFor="let group of exhibitorFormGroups; let i = index"
-        [group]="group"
-        [index]="i"
-        [provincesOptions]="(provincesOptions$ | async)!"
-        (remove)="removeGroup(i)"
-      ></app-exhibitor-form>
-
-      <div class="row">
-        <div class="position-relative col-2 row">
-          <div
-            class="position-absolute rounded-circle border border-1 border-white border-opacity-10 col-9"
-          ></div>
+        <div class="row">
+          <div class="position-relative col-2 row">
+            <div
+              class="position-absolute rounded-circle border border-1 border-white border-opacity-10 col-9"
+            ></div>
+          </div>
+          <p
+            (click)="addGroup()"
+            class="text-danger fs-6 fw-medium col-10 m-0 px-3 py-2"
+          >
+            Add Exhibitor
+          </p>
         </div>
-        <p
-          (click)="addGroup()"
-          class="text-danger fs-6 fw-medium font-family-Montserrat col-10 m-0 px-3 py-2"
-        >
-          Add Exhibitor
-        </p>
       </div>
+      <app-ui-button (click)="register()">Register</app-ui-button>
     </div>
   </form>
-
-  <div *ngIf="companiesOptions$ | async as companies">
-    <app-ui-button (click)="register()">Register</app-ui-button>
-  </div>
 </div>

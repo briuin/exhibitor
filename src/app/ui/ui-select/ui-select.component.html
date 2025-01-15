@@ -1,6 +1,23 @@
-<select class="form-select" [value]="value" (change)="onInputChange($event)">
-  <option *ngIf="placeholder" selected>{{ placeholder }}</option>
-  <option *ngFor="let option of options" [value]="option.value">
-    {{ option.label }}
-  </option>
-</select>
+<div class="mb-3">
+  <label *ngIf="placeholder" class="form-label">{{ label }}</label>
+  <select
+    class="form-select"
+    [value]="value"
+    (change)="onInputChange($event)"
+    [class.is-invalid]="
+      ngControl?.invalid && (ngControl?.touched || ngControl?.dirty)
+    "
+  >
+    <option *ngIf="placeholder" selected>{{ placeholder }}</option>
+    <option *ngFor="let option of options" [value]="option.value">
+      {{ option.label }}
+    </option>
+  </select>
+
+  <div
+    class="invalid-feedback"
+    *ngIf="ngControl?.invalid && (ngControl?.touched || ngControl?.dirty)"
+  >
+    <div *ngIf="ngControl?.errors?.['required']">{{ label }} is required</div>
+  </div>
+</div>

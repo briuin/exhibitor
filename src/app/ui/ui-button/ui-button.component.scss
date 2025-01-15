@@ -1,0 +1,7 @@
+.ui-btn-primary {
+  background-color: var(--corporate-red-orange);
+
+  &:hover {
+    background-color: var(--corporate-orange);
+  }
+}

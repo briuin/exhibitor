@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, inject, Injector, Input } from '@angular/core';
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  NgControl,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-ui-select',
@@ -11,7 +15,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => UiSelectComponent),
+      useExisting: UiSelectComponent,
       multi: true,
     },
   ],
@@ -19,8 +23,22 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class UiSelectComponent implements ControlValueAccessor {
   @Input() options: { label: string; value: any }[] = [];
   @Input() placeholder: string = '';
+  @Input() label: string = '';
 
+  private injector = inject(Injector);
   value: any;
+
+  ngControl: NgControl | null = null;
+
+  ngOnInit() {
+    this.ngControl = this.injector.get(NgControl, null, {
+      self: true,
+      optional: true,
+    });
+    if (this.ngControl != null) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
 
   private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
