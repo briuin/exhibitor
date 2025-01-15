@@ -12,19 +12,22 @@ import {
 import { CommonModule } from '@angular/common';
 import { UiButtonComponent } from './ui/ui-button/ui-button.component';
 import { AddExhibitorHttpRequest } from './exhibitor/exhibitor.model';
-import { map } from 'rxjs';
+import { forkJoin, map, Observable, of } from 'rxjs';
 import { UiCardComponent } from './ui/ui-card/ui-card.component';
 import { UiRadioComponent } from './ui/ui-radio/ui-radio.component';
 import { UiSelectComponent } from './ui/ui-select/ui-select.component';
 import { UiDividersComponent } from './ui/ui-dividers/ui-dividers.component';
 import { UiInputComponent } from './ui/ui-input/ui-input.component';
 import {
+  FormArray,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { EventType } from './models/event-type.model';
+import { UiRadioGroupComponent } from './ui/ui-radio-group/ui-radio-group.component';
 
 @Component({
   selector: 'app-root',
@@ -33,6 +36,7 @@ import {
     UiButtonComponent,
     UiCardComponent,
     UiRadioComponent,
+    UiRadioGroupComponent,
     UiDividersComponent,
     UiSelectComponent,
     UiInputComponent,
@@ -43,44 +47,134 @@ import {
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  companies$;
-  provinces$;
+  companiesOptions$!: Observable<Array<{ label: string; value: string }>>;
+  provincesOptions$!: Observable<Array<{ label: string; value: string }>>;
   form!: FormGroup;
+
+  get formGroups(): FormArray {
+    return this.form.get('groups') as FormArray;
+  }
 
   constructor(private readonly store: Store, private fb: FormBuilder) {
     this.store.dispatch(loadCompanies());
     this.store.dispatch(loadProvinces());
-    this.companies$ = this.store.select(selectCompanies);
-    this.provinces$ = this.store
-      .select(selectProvinces)
-      .pipe(map((x) => x.slice(0, 5)));
 
+    this.provincesOptions$ = this.store.select(selectProvinces).pipe(
+      map((data) => {
+        // Create a map to store unique countries
+        const uniqueCountries = new Map();
+
+        data.forEach((item) => {
+          const { country, coutry_code } = item;
+          if (!uniqueCountries.has(country)) {
+            uniqueCountries.set(country, {
+              label: country,
+              value: coutry_code,
+            });
+          }
+        });
+
+        // Convert the map values to an array
+        return Array.from(uniqueCountries.values());
+      })
+    );
+
+    // this.form = this.fb.group({
+    //   email: ['', Validators.required],
+    //   badgeName: ['', Validators.required],
+    //   country: ['', Validators.required],
+    //   badgeCompany: ['', Validators.required],
+    //   jobTitle: ['', Validators.required],
+    //
+    // });
+  }
+
+  eventTypeOptions = [
+    { label: 'FHA-Food & Beverage', value: EventType.FHA },
+    { label: 'Prowine Singapore', value: EventType.Prowine },
+  ];
+
+  ngOnInit(): void {
+    this.loadCompanies();
     this.form = this.fb.group({
-      email: ['', Validators.required],
-      badgeName: ['', Validators.required],
+      groups: this.fb.array([]),
+      eventType: ['', Validators.required],
       company: ['', Validators.required],
-      badgeCompany: ['', Validators.required],
-      jobTitle: ['', Validators.required],
+    });
+
+    this.form.get('eventType')?.valueChanges.subscribe((value) => {
+      console.log('Radio value changed:', value);
+      this.loadCompanies();
+    });
+
+    this.addGroup();
+  }
+
+  loadCompanies() {
+    this.companiesOptions$ = this.store.select(selectCompanies).pipe(
+      map((company) =>
+        company
+          .filter((x) => x.S_event === this.form.get('eventType')?.value)
+          .map((x) => ({
+            label: x.S_company,
+            value: x.S_company,
+          }))
+      )
+    );
+  }
+
+  addGroup(): void {
+    this.formGroups.push(this.createExhibitorFormGroup());
+  }
+
+  removeGroup(index: number): void {
+    this.formGroups.removeAt(index);
+  }
+
+  register() {
+    console.log(this.form);
+    if (!this.form.valid) {
+      return;
+    }
+
+    const apiCalls = this.formGroups.controls.map((group) => {
+      const body: AddExhibitorHttpRequest = {
+        S_added_via: 'Web Form',
+        S_company: this.form.get('company')?.value,
+        S_email_address: group.get('email')?.value,
+        S_group_reg_id: this.generateRandomString(),
+        S_name_on_badge: group.get('badgeName')?.value,
+        S_job_title: group.get('jobTitle')?.value,
+        S_country: group.get('country')?.value,
+        S_company_on_badge: group.get('badgeCompany')?.value,
+        SB_event_fha: group.get('eventType')?.value === EventType.FHA,
+        SB_event_prowine:
+          this.form.get('eventType')?.value === EventType.Prowine,
+      };
+      return of(this.store.dispatch(addExhibitor({ exhibitor: body })));
+    });
+
+    forkJoin(apiCalls).subscribe({
+      next: (responses) => {
+        console.log('All API calls completed:', responses);
+      },
+      error: (error) => {
+        console.error('Error in forkJoin:', error);
+      },
+      complete: () => {
+        console.log('Completed');
+      },
     });
   }
 
-  register(company: string) {
-    console.log(this.form);
-    return;
-    const body: AddExhibitorHttpRequest = {
-      S_added_via: 'Web Form',
-      S_company: company,
-      S_email_address: 'test',
-      S_group_reg_id: this.generateRandomString(),
-      S_name_on_badge: 'test',
-      S_job_title: 'test',
-      S_country: 'test',
-      S_company_on_badge: 'test',
-      SB_event_fha: true,
-      SB_event_prowine: false,
-    };
-
-    this.store.dispatch(addExhibitor({ exhibitor: body }));
+  createExhibitorFormGroup(): FormGroup {
+    return this.fb.group({
+      email: ['', Validators.required],
+      badgeName: ['', Validators.required],
+      country: ['', Validators.required],
+      badgeCompany: ['', Validators.required],
+      jobTitle: ['', Validators.required],
+    });
   }
 
   generateRandomString(): string {

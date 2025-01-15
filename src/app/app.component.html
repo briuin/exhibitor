@@ -14,8 +14,13 @@
         >
           Event Selection
         </p>
-        <app-ui-radio></app-ui-radio>
-        <app-ui-radio></app-ui-radio>
+        <app-ui-radio-group formControlName="eventType" name="eventType">
+          <app-ui-radio
+            [value]="option.value"
+            *ngFor="let option of eventTypeOptions"
+            >{{ option.label }}</app-ui-radio
+          >
+        </app-ui-radio-group>
 
         <div class="row">
           <div class="col-12 row d-flex">
@@ -31,7 +36,11 @@
               Exhibitor Team for assistance.
             </p>
           </div>
-          <app-ui-select></app-ui-select>
+          <app-ui-select
+            formControlName="company"
+            [options]="(companiesOptions$ | async)!"
+            placeholder="Please Select"
+          ></app-ui-select>
         </div>
       </app-ui-card>
     </div>
@@ -43,45 +52,54 @@
     >
       * All fields are mandatory.
     </p>
-    <app-ui-card>
-      <div
-        class="px-1 py-1 bg-danger-subtle rounded-top--3 rounded-top--3 row justify-content-between"
+    <div formArrayName="groups">
+      <app-ui-card
+        *ngFor="let group of formGroups.controls; let i = index"
+        [formGroupName]="i"
       >
-        <p
-          class="text-secondary fs-6 fw-semibold font-family-Montserrat col-3 m-0 px-3 py-2"
+        <div
+          class="px-1 py-1 bg-danger-subtle rounded-top--3 rounded-top--3 row justify-content-between"
         >
-          Exhibitor #1
-        </p>
-        <p
-          class="text-end text-danger fs-6 fw-normal font-family-Montserrat text-decoration-underline col-2 m-0 px-3 py-2"
-        >
-          Remove
-        </p>
-      </div>
+          <p
+            class="text-secondary fs-6 fw-semibold font-family-Montserrat col m-0 px-3 py-2"
+          >
+            Exhibitor #{{ i + 1 }}
+          </p>
+          <p
+            class="text-end text-danger fs-6 fw-normal font-family-Montserrat text-decoration-underline col m-0 px-3 py-2"
+          >
+            Remove
+          </p>
+        </div>
 
-      <div>
-        <app-ui-input formControlName="email" label="Email Address"></app-ui-input>
-        <app-ui-input formControlName="badgeName" label="Name on Badge"></app-ui-input>
-        <app-ui-input formControlName="jobTitle" label="Job Title"></app-ui-input>
-        <app-ui-select></app-ui-select>
-        <app-ui-input formControlName="companyName" label="Company on Badge"></app-ui-input>
-      </div>
-    </app-ui-card>
+        <div>
+          <app-ui-input
+            formControlName="email"
+            label="Email Address"
+          ></app-ui-input>
+          <app-ui-input
+            formControlName="badgeName"
+            label="Name on Badge"
+          ></app-ui-input>
+          <app-ui-input
+            formControlName="jobTitle"
+            label="Job Title"
+          ></app-ui-input>
+          <app-ui-select
+            formControlName="country"
+            [options]="(provincesOptions$ | async)!"
+          ></app-ui-select>
+          <app-ui-input
+            formControlName="badgeCompany"
+            label="Company on Badge"
+          ></app-ui-input>
+        </div>
+      </app-ui-card>
+    </div>
   </form>
 
-  <div *ngIf="companies$ | async as companies">
-    <ul>
-      <li *ngFor="let company of companies">{{ company.S_company }}</li>
-    </ul>
+  <div *ngIf="companiesOptions$ | async as companies">
 
-    <ul>
-      <li *ngFor="let province of provinces$ | async">
-        {{ province.country }}
-      </li>
-    </ul>
-
-    <app-ui-button (click)="register(companies[0].S_company)"
-      >Register</app-ui-button
-    >
+    <app-ui-button (click)="register()">Register</app-ui-button>
   </div>
 </div>
