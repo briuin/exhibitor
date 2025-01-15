@@ -1,11 +1,87 @@
-<div *ngIf="companies$ | async as companies">
-  <ul>
-    <li *ngFor="let company of companies">{{ company.S_company }}</li>
-  </ul>
+<div class="position-relative bg-light row">
+  <div class="container-fluid py-3">
+    <p
+      class="text-danger fs-5 fw-semibold font-family-Montserrat m-0 px-3 py-2"
+    >
+      Onsite Exhibitors Registration
+    </p>
+  </div>
+  <form [formGroup]="form">
+    <div class="shadow col-11 justify-content-center align-items-center">
+      <app-ui-card>
+        <p
+          class="text-secondary fs-6 fw-medium font-family-Montserrat m-0 px-3 py-2"
+        >
+          Event Selection
+        </p>
+        <app-ui-radio></app-ui-radio>
+        <app-ui-radio></app-ui-radio>
 
-  <ul>
-    <li *ngFor="let province of provinces$|async">{{ province.country }}</li>
-  </ul>
+        <div class="row">
+          <div class="col-12 row d-flex">
+            <p
+              class="text-secondary fs-6 fw-medium font-family-Montserrat col-12 m-0 px-3 py-2"
+            >
+              Company
+            </p>
+            <p
+              class="text-secondary fs-6 fw-normal font-family-Montserrat col-12 m-0 px-3 py-2"
+            >
+              If you are unable to find your company name, please approach our
+              Exhibitor Team for assistance.
+            </p>
+          </div>
+          <app-ui-select></app-ui-select>
+        </div>
+      </app-ui-card>
+    </div>
 
-  <app-ui-button (click)="register(companies[0].S_company)">Register</app-ui-button>
+    <app-ui-dividers></app-ui-dividers>
+
+    <p
+      class="text-secondary fs-6 fw-normal font-family-Montserrat m-0 px-3 py-2"
+    >
+      * All fields are mandatory.
+    </p>
+    <app-ui-card>
+      <div
+        class="px-1 py-1 bg-danger-subtle rounded-top--3 rounded-top--3 row justify-content-between"
+      >
+        <p
+          class="text-secondary fs-6 fw-semibold font-family-Montserrat col-3 m-0 px-3 py-2"
+        >
+          Exhibitor #1
+        </p>
+        <p
+          class="text-end text-danger fs-6 fw-normal font-family-Montserrat text-decoration-underline col-2 m-0 px-3 py-2"
+        >
+          Remove
+        </p>
+      </div>
+
+      <div>
+        <app-ui-input formControlName="email" label="Email Address"></app-ui-input>
+        <app-ui-input formControlName="badgeName" label="Name on Badge"></app-ui-input>
+        <app-ui-input formControlName="jobTitle" label="Job Title"></app-ui-input>
+        <app-ui-select></app-ui-select>
+        <app-ui-input formControlName="companyName" label="Company on Badge"></app-ui-input>
+      </div>
+    </app-ui-card>
+  </form>
+
+  <div *ngIf="companies$ | async as companies">
+    <ul>
+      <li *ngFor="let company of companies">{{ company.S_company }}</li>
+    </ul>
+
+    <ul>
+      <li *ngFor="let province of provinces$ | async">
+        {{ province.country }}
+      </li>
+    </ul>
+
+    <app-ui-button (click)="register(companies[0].S_company)"
+      >Register</app-ui-button
+    >
+  </div>
 </div>
