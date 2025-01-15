@@ -42,3 +42,13 @@ export const selectProvinces = createSelector(
   selectExhibitorState,
   (state) => state.provinces
 );
+
+export const selectAddExhibitorProgress = createSelector(
+  selectExhibitorState,
+  (state) => state.progress
+);
+
+export const selectAddExhibitorIsLoading = createSelector(
+  selectExhibitorState,
+  (state) => state.isAddingExhibitor
+);

@@ -6,6 +6,8 @@ import {
   loadProvinces,
 } from './exhibitor/store/exhibitor.actions';
 import {
+  selectAddExhibitorIsLoading,
+  selectAddExhibitorProgress,
   selectCompanies,
   selectLastAddMultipleExhibitorResponse,
   selectProvinces,
@@ -55,6 +57,9 @@ export class AppComponent {
   provincesOptions$!: Observable<SelectOption[]>;
   form!: FormGroup;
 
+  isAdding$!: Observable<boolean>;
+  progress$!: Observable<number>;
+
   get formGroups(): FormArray {
     return this.form.get('groups') as FormArray;
   }
@@ -87,7 +92,6 @@ export class AppComponent {
     });
 
     this.form.get('eventType')?.valueChanges.subscribe((value) => {
-      console.log('Radio value changed:', value);
       this.loadCompanies();
     });
 
@@ -96,11 +100,13 @@ export class AppComponent {
     this.store
       .select(selectLastAddMultipleExhibitorResponse)
       .subscribe((responses) => {
-        console.log('error', responses);
         if (responses && responses.length > 0) {
           this.onExhibitorsAddedSuccess();
         }
       });
+
+    this.isAdding$ = this.store.select(selectAddExhibitorIsLoading);
+    this.progress$ = this.store.select(selectAddExhibitorProgress);
   }
 
   onExhibitorsAddedSuccess(): void {
@@ -151,7 +157,7 @@ export class AppComponent {
   }
 
   register() {
-    console.log(this.form);
+
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;

@@ -11,6 +11,7 @@ import {
   loadProvincesFailure,
   addMultipleExhibitorsSuccess,
   addMultipleExhibitorsFailure,
+  updateProgress,
 } from './exhibitor.actions';
 import { ExhibitorCompany, Province } from '../exhibitor.model';
 
@@ -24,6 +25,8 @@ export interface ExhibitorState {
   AddMultipleExhibitorsError: string | null;
   lastAddMultipleExhibitorResponse: any[];
   lastAddExhibitorResponse: any;
+  progress: number;
+  isAddingExhibitor: boolean;
 
   provinces: Province[];
   loading: boolean;
@@ -40,6 +43,8 @@ export const initialExhibitorState: ExhibitorState = {
   AddMultipleExhibitorsError: '',
   lastAddExhibitorResponse: null,
   lastAddMultipleExhibitorResponse: [],
+  progress: 0,
+  isAddingExhibitor: false,
 
   provinces: [],
   loading: false,
@@ -105,5 +110,10 @@ export const exhibitorReducer = createReducer(
     ...state,
     loading: false,
     error,
+  })),
+  on(updateProgress, (state, { completed, total }) => ({
+    ...state,
+    progress: Math.round((completed / total) * 100),
+    isAddingExhibitor: completed < total,
   }))
 );

@@ -73,3 +73,21 @@
     </ng-container>
   </form>
 </div>
+
+<div
+  class="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 bg-light bg-opacity-75"
+  *ngIf="(isAdding$ | async)"
+  style="z-index: 1050"
+>
+  <div class="progress w-75" style="height: 30px">
+    <div
+      class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+      role="progressbar"
+      [style.width.%]="progress$ | async"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    >
+      {{ (progress$ | async) || 0 }}%
+    </div>
+  </div>
+</div>

@@ -44,6 +44,7 @@ export const addMultipleExhibitorsFailure = createAction(
 );
 
 export const loadProvinces = createAction('[Provinces/API] Load Provinces');
+
 export const loadProvincesSuccess = createAction(
   '[Provinces/API] Load Provinces Success',
   props<{ provinces: Province[] }>()
@@ -51,4 +52,9 @@ export const loadProvincesSuccess = createAction(
 export const loadProvincesFailure = createAction(
   '[Provinces/API] Load Provinces Failure',
   props<{ error: any }>()
+);
+
+export const updateProgress = createAction(
+  '[Exhibitor] Update Progress',
+  props<{ completed: number; total: number }>()
 );

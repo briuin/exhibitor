@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { mergeMap, map, catchError } from 'rxjs/operators';
+import { mergeMap, map, catchError, tap } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 
 import { ExhibitorService } from '../exhibitor.service';
@@ -17,12 +17,15 @@ import {
   addMultipleExhibitors,
   addMultipleExhibitorsFailure,
   addMultipleExhibitorsSuccess,
+  updateProgress,
 } from './exhibitor.actions';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class ExhibitorEffects {
   private actions$ = inject(Actions);
   private exhibitorService = inject(ExhibitorService);
+  private store = inject(Store);
 
   loadCompanies$ = createEffect(() =>
     this.actions$.pipe(
@@ -52,10 +55,21 @@ export class ExhibitorEffects {
     this.actions$.pipe(
       ofType(addMultipleExhibitors),
       mergeMap((action) => {
+        const total = action.exhibitors.length;
+        let completed = 0;
+
         const apiCalls = action.exhibitors.map((exhibitor) =>
           this.exhibitorService.addExhibitor(exhibitor).pipe(
             map((response) => ({ response, exhibitor })),
-            catchError((error) => of({ error, exhibitor }))
+            tap(() => {
+              completed++;
+              this.store.dispatch(updateProgress({ completed, total }));
+            }),
+            catchError((error) => {
+              completed++;
+              this.store.dispatch(updateProgress({ completed, total }));
+              return of({ error, exhibitor });
+            })
           )
         );
 
