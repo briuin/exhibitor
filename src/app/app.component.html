@@ -53,53 +53,31 @@
       * All fields are mandatory.
     </p>
     <div formArrayName="groups">
-      <app-ui-card
-        *ngFor="let group of formGroups.controls; let i = index"
-        [formGroupName]="i"
-      >
-        <div
-          class="px-1 py-1 bg-danger-subtle rounded-top--3 rounded-top--3 row justify-content-between"
-        >
-          <p
-            class="text-secondary fs-6 fw-semibold font-family-Montserrat col m-0 px-3 py-2"
-          >
-            Exhibitor #{{ i + 1 }}
-          </p>
-          <p
-            class="text-end text-danger fs-6 fw-normal font-family-Montserrat text-decoration-underline col m-0 px-3 py-2"
-          >
-            Remove
-          </p>
-        </div>
+      <app-exhibitor-form
+        *ngFor="let group of exhibitorFormGroups; let i = index"
+        [group]="group"
+        [index]="i"
+        [provincesOptions]="(provincesOptions$ | async)!"
+        (remove)="removeGroup(i)"
+      ></app-exhibitor-form>
 
-        <div>
-          <app-ui-input
-            formControlName="email"
-            label="Email Address"
-          ></app-ui-input>
-          <app-ui-input
-            formControlName="badgeName"
-            label="Name on Badge"
-          ></app-ui-input>
-          <app-ui-input
-            formControlName="jobTitle"
-            label="Job Title"
-          ></app-ui-input>
-          <app-ui-select
-            formControlName="country"
-            [options]="(provincesOptions$ | async)!"
-          ></app-ui-select>
-          <app-ui-input
-            formControlName="badgeCompany"
-            label="Company on Badge"
-          ></app-ui-input>
+      <div class="row">
+        <div class="position-relative col-2 row">
+          <div
+            class="position-absolute rounded-circle border border-1 border-white border-opacity-10 col-9"
+          ></div>
         </div>
-      </app-ui-card>
+        <p
+          (click)="addGroup()"
+          class="text-danger fs-6 fw-medium font-family-Montserrat col-10 m-0 px-3 py-2"
+        >
+          Add Exhibitor
+        </p>
+      </div>
     </div>
   </form>
 
   <div *ngIf="companiesOptions$ | async as companies">
-
     <app-ui-button (click)="register()">Register</app-ui-button>
   </div>
 </div>

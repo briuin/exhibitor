@@ -17,7 +17,6 @@ import { UiCardComponent } from './ui/ui-card/ui-card.component';
 import { UiRadioComponent } from './ui/ui-radio/ui-radio.component';
 import { UiSelectComponent } from './ui/ui-select/ui-select.component';
 import { UiDividersComponent } from './ui/ui-dividers/ui-dividers.component';
-import { UiInputComponent } from './ui/ui-input/ui-input.component';
 import {
   FormArray,
   FormBuilder,
@@ -28,6 +27,7 @@ import {
 import { EventType } from './models/event-type.model';
 import { UiRadioGroupComponent } from './ui/ui-radio-group/ui-radio-group.component';
 import { SelectOption } from './models/select-option.model';
+import { ExhibitorFormComponent } from './components/exhibitor-form/exhibitor-form.component';
 
 @Component({
   selector: 'app-root',
@@ -39,8 +39,9 @@ import { SelectOption } from './models/select-option.model';
     UiRadioGroupComponent,
     UiDividersComponent,
     UiSelectComponent,
-    UiInputComponent,
+    ExhibitorFormComponent,
     ReactiveFormsModule,
+    ExhibitorFormComponent,
   ],
   standalone: true,
   templateUrl: './app.component.html',
@@ -53,6 +54,10 @@ export class AppComponent {
 
   get formGroups(): FormArray {
     return this.form.get('groups') as FormArray;
+  }
+
+  get exhibitorFormGroups(): FormGroup[] {
+    return this.formGroups.controls.map((control) => control as FormGroup);
   }
 
   constructor(private readonly store: Store, private fb: FormBuilder) {}
@@ -69,7 +74,7 @@ export class AppComponent {
     this.loadCompanies();
     this.loadProvinces();
     this.form = this.fb.group({
-      groups: this.fb.array([]),
+      groups: this.fb.array([], [Validators.minLength(1)]),
       eventType: ['', Validators.required],
       company: ['', Validators.required],
     });
@@ -126,6 +131,7 @@ export class AppComponent {
   register() {
     console.log(this.form);
     if (!this.form.valid) {
+      this.form.markAllAsTouched();
       return;
     }
 
@@ -151,7 +157,7 @@ export class AppComponent {
 
   createExhibitorFormGroup(): FormGroup {
     return this.fb.group({
-      email: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       badgeName: ['', Validators.required],
       country: ['', Validators.required],
       badgeCompany: ['', Validators.required],

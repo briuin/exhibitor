@@ -1,0 +1,38 @@
+<app-ui-card [formGroup]="group" class="mb-3">
+  <div
+    class="px-1 py-1 bg-danger-subtle rounded-top--3 row justify-content-between"
+  >
+    <p class="text-secondary fs-6 fw-semibold col m-0 px-3 py-2">
+      Exhibitor #{{ index + 1 }}
+    </p>
+    <p
+      class="text-end text-danger fs-6 fw-normal text-decoration-underline col m-0 px-3 py-2"
+      (click)="onRemoveClick()"
+    >
+      Remove
+    </p>
+  </div>
+
+  <div>
+    <app-ui-input formControlName="email" label="Email Address"></app-ui-input>
+
+    <app-ui-input
+      formControlName="badgeName"
+      label="Name on Badge"
+    ></app-ui-input>
+
+    <app-ui-input formControlName="jobTitle" label="Job Title"></app-ui-input>
+
+    <app-ui-select
+      formControlName="country"
+      placeholder="Please Select"
+      [options]="provincesOptions"
+      label="Country"
+    ></app-ui-select>
+
+    <app-ui-input
+      formControlName="badgeCompany"
+      label="Company on Badge"
+    ></app-ui-input>
+  </div>
+</app-ui-card>

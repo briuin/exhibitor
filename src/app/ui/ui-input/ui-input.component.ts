@@ -1,19 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, inject, Injector, Input, Optional, Self } from '@angular/core';
 import {
   ControlValueAccessor,
-  FormsModule,
   NG_VALUE_ACCESSOR,
+  NgControl,
 } from '@angular/forms';
 
 @Component({
   selector: 'app-ui-input',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   standalone: true,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => UiInputComponent),
+      useExisting: UiInputComponent,
       multi: true,
     },
   ],
@@ -25,10 +25,20 @@ export class UiInputComponent implements ControlValueAccessor {
   @Input() type = 'text';
   @Input() placeholder: string = '';
 
+  private injector = inject(Injector);
   private onChange: (value: string) => void = () => {};
   private onTouched: () => void = () => {};
 
+  ngControl: NgControl | null = null;
+
   value = '';
+
+  ngOnInit() {
+    this.ngControl = this.injector.get(NgControl, null, { self: true, optional: true });
+    if (this.ngControl != null) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
 
   writeValue(value: string): void {
     this.value = value || '';
