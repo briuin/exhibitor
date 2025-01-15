@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
-  addExhibitor,
+  addMultipleExhibitors,
   loadCompanies,
   loadProvinces,
 } from './exhibitor/store/exhibitor.actions';
@@ -12,7 +12,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { UiButtonComponent } from './ui/ui-button/ui-button.component';
 import { AddExhibitorHttpRequest } from './exhibitor/exhibitor.model';
-import { forkJoin, map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { UiCardComponent } from './ui/ui-card/ui-card.component';
 import { UiRadioComponent } from './ui/ui-radio/ui-radio.component';
 import { UiSelectComponent } from './ui/ui-select/ui-select.component';
@@ -22,12 +22,12 @@ import {
   FormArray,
   FormBuilder,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { EventType } from './models/event-type.model';
 import { UiRadioGroupComponent } from './ui/ui-radio-group/ui-radio-group.component';
+import { SelectOption } from './models/select-option.model';
 
 @Component({
   selector: 'app-root',
@@ -47,47 +47,15 @@ import { UiRadioGroupComponent } from './ui/ui-radio-group/ui-radio-group.compon
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  companiesOptions$!: Observable<Array<{ label: string; value: string }>>;
-  provincesOptions$!: Observable<Array<{ label: string; value: string }>>;
+  companiesOptions$!: Observable<SelectOption[]>;
+  provincesOptions$!: Observable<SelectOption[]>;
   form!: FormGroup;
 
   get formGroups(): FormArray {
     return this.form.get('groups') as FormArray;
   }
 
-  constructor(private readonly store: Store, private fb: FormBuilder) {
-    this.store.dispatch(loadCompanies());
-    this.store.dispatch(loadProvinces());
-
-    this.provincesOptions$ = this.store.select(selectProvinces).pipe(
-      map((data) => {
-        // Create a map to store unique countries
-        const uniqueCountries = new Map();
-
-        data.forEach((item) => {
-          const { country, coutry_code } = item;
-          if (!uniqueCountries.has(country)) {
-            uniqueCountries.set(country, {
-              label: country,
-              value: coutry_code,
-            });
-          }
-        });
-
-        // Convert the map values to an array
-        return Array.from(uniqueCountries.values());
-      })
-    );
-
-    // this.form = this.fb.group({
-    //   email: ['', Validators.required],
-    //   badgeName: ['', Validators.required],
-    //   country: ['', Validators.required],
-    //   badgeCompany: ['', Validators.required],
-    //   jobTitle: ['', Validators.required],
-    //
-    // });
-  }
+  constructor(private readonly store: Store, private fb: FormBuilder) {}
 
   eventTypeOptions = [
     { label: 'FHA-Food & Beverage', value: EventType.FHA },
@@ -95,7 +63,11 @@ export class AppComponent {
   ];
 
   ngOnInit(): void {
+    this.store.dispatch(loadCompanies());
+    this.store.dispatch(loadProvinces());
+
     this.loadCompanies();
+    this.loadProvinces();
     this.form = this.fb.group({
       groups: this.fb.array([]),
       eventType: ['', Validators.required],
@@ -123,6 +95,26 @@ export class AppComponent {
     );
   }
 
+  loadProvinces() {
+    this.provincesOptions$ = this.store.select(selectProvinces).pipe(
+      map((data) => {
+        const uniqueCountries = new Map();
+
+        data.forEach((item) => {
+          const { country, coutry_code } = item;
+          if (!uniqueCountries.has(country)) {
+            uniqueCountries.set(country, {
+              label: country,
+              value: coutry_code,
+            });
+          }
+        });
+
+        return Array.from(uniqueCountries.values());
+      })
+    );
+  }
+
   addGroup(): void {
     this.formGroups.push(this.createExhibitorFormGroup());
   }
@@ -137,7 +129,7 @@ export class AppComponent {
       return;
     }
 
-    const apiCalls = this.formGroups.controls.map((group) => {
+    const requests = this.formGroups.controls.map((group) => {
       const body: AddExhibitorHttpRequest = {
         S_added_via: 'Web Form',
         S_company: this.form.get('company')?.value,
@@ -151,20 +143,10 @@ export class AppComponent {
         SB_event_prowine:
           this.form.get('eventType')?.value === EventType.Prowine,
       };
-      return of(this.store.dispatch(addExhibitor({ exhibitor: body })));
+      return body;
     });
 
-    forkJoin(apiCalls).subscribe({
-      next: (responses) => {
-        console.log('All API calls completed:', responses);
-      },
-      error: (error) => {
-        console.error('Error in forkJoin:', error);
-      },
-      complete: () => {
-        console.log('Completed');
-      },
-    });
+    this.store.dispatch(addMultipleExhibitors({ exhibitors: requests }));
   }
 
   createExhibitorFormGroup(): FormGroup {

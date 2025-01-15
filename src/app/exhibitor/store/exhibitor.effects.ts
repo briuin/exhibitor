@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { mergeMap, map, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 
 import { ExhibitorService } from '../exhibitor.service';
 import {
@@ -14,6 +14,9 @@ import {
   loadProvinces,
   loadProvincesSuccess,
   loadProvincesFailure,
+  addMultipleExhibitors,
+  addMultipleExhibitorsFailure,
+  addMultipleExhibitorsSuccess,
 } from './exhibitor.actions';
 
 @Injectable()
@@ -42,6 +45,33 @@ export class ExhibitorEffects {
           catchError((error) => of(addExhibitorFailure({ error })))
         )
       )
+    )
+  );
+
+  addMultipleExhibitors$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addMultipleExhibitors),
+      mergeMap((action) => {
+        const apiCalls = action.exhibitors.map((exhibitor) =>
+            this.exhibitorService.addExhibitor(exhibitor).pipe(
+                map((response) => addExhibitorSuccess({ response })),
+                catchError((error) => of(addExhibitorFailure({ error })))
+              )
+        );
+
+        return forkJoin(apiCalls).pipe(
+          map((responses) => {
+            const errors = responses.filter((res: any) => res?.error);
+            if (errors.length) {
+              return addMultipleExhibitorsFailure({ error: errors });
+            }
+            return addMultipleExhibitorsSuccess({ responses });
+          }),
+          catchError((error) =>
+            of(addMultipleExhibitorsFailure({ error }))
+          )
+        );
+      })
     )
   );
 

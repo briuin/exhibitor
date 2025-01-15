@@ -9,6 +9,8 @@ import {
   loadProvinces,
   loadProvincesSuccess,
   loadProvincesFailure,
+  addMultipleExhibitorsSuccess,
+  addMultipleExhibitorsFailure,
 } from './exhibitor.actions';
 import { ExhibitorCompany, Province } from '../exhibitor.model';
 
@@ -19,6 +21,7 @@ export interface ExhibitorState {
 
   addingExhibitor: boolean;
   addExhibitorError: any;
+  AddMultipleExhibitorsError: string | null;
   lastAddExhibitorResponse: any;
 
   provinces: Province[];
@@ -34,6 +37,7 @@ export const initialExhibitorState: ExhibitorState = {
 
   addingExhibitor: false,
   addExhibitorError: null,
+  AddMultipleExhibitorsError: '',
   lastAddExhibitorResponse: null,
 
   provinces: [],
@@ -76,11 +80,19 @@ export const exhibitorReducer = createReducer(
     addingExhibitor: false,
     addExhibitorError: error,
   })),
+  on(addMultipleExhibitorsSuccess, (state, { responses }) => ({
+    ...state,
+    error: null,
+  })),
+  on(addMultipleExhibitorsFailure, (state, { error }) => ({
+    ...state,
+    AddMultipleExhibitorsError: 'One or more API calls failed',
+  })),
 
   on(loadProvinces, (state) => ({
     ...state,
     loading: true,
-    error: null
+    AddMultipleExhibitorsError: null
   })),
   on(loadProvincesSuccess, (state, { provinces }) => ({
     ...state,

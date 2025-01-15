@@ -28,6 +28,21 @@ export const addExhibitorFailure = createAction(
   props<{ error: any }>()
 );
 
+export const addMultipleExhibitors = createAction(
+  '[Exhibitor/API] Add Multiple Exhibitors',
+  props<{ exhibitors: AddExhibitorHttpRequest[] }>()
+);
+
+export const addMultipleExhibitorsSuccess = createAction(
+  '[Exhibitor/API] Add Multiple Exhibitors Success',
+  props<{ responses: any[] }>()
+);
+
+export const addMultipleExhibitorsFailure = createAction(
+  '[Exhibitor/API] Add Multiple Exhibitors Failure',
+  props<{ error: any }>()
+);
+
 export const loadProvinces = createAction('[Provinces/API] Load Provinces');
 export const loadProvincesSuccess = createAction(
   '[Provinces/API] Load Provinces Success',
