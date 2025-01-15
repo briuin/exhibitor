@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   addMultipleExhibitors,
@@ -7,6 +7,7 @@ import {
 } from './exhibitor/store/exhibitor.actions';
 import {
   selectCompanies,
+  selectLastAddMultipleExhibitorResponse,
   selectProvinces,
 } from './exhibitor/store/exhibitor.selectors';
 import { CommonModule } from '@angular/common';
@@ -28,6 +29,8 @@ import { EventType } from './models/event-type.model';
 import { UiRadioGroupComponent } from './ui/ui-radio-group/ui-radio-group.component';
 import { SelectOption } from './models/select-option.model';
 import { ExhibitorFormComponent } from './components/exhibitor-form/exhibitor-form.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SuccessModalComponent } from './components/success-modal/success-modal.component';
 
 @Component({
   selector: 'app-root',
@@ -60,7 +63,11 @@ export class AppComponent {
     return this.formGroups.controls.map((control) => control as FormGroup);
   }
 
-  constructor(private readonly store: Store, private fb: FormBuilder) {}
+  constructor(
+    private readonly store: Store,
+    private fb: FormBuilder,
+    private modalService: NgbModal
+  ) {}
 
   eventTypeOptions = [
     { label: 'FHA-Food & Beverage', value: EventType.FHA },
@@ -85,6 +92,21 @@ export class AppComponent {
     });
 
     this.addGroup();
+
+    this.store
+      .select(selectLastAddMultipleExhibitorResponse)
+      .subscribe((responses) => {
+        console.log('error', responses);
+        if (responses && responses.length > 0) {
+          this.onExhibitorsAddedSuccess();
+        }
+      });
+  }
+
+  onExhibitorsAddedSuccess(): void {
+    this.modalService.open(SuccessModalComponent, {
+      centered: true,
+    });
   }
 
   loadCompanies() {
@@ -135,12 +157,14 @@ export class AppComponent {
       return;
     }
 
+    const uniqueId = this.generateRandomString();
+
     const requests = this.formGroups.controls.map((group) => {
       const body: AddExhibitorHttpRequest = {
         S_added_via: 'Web Form',
         S_company: this.form.get('company')?.value,
         S_email_address: group.get('email')?.value,
-        S_group_reg_id: this.generateRandomString(),
+        S_group_reg_id: uniqueId,
         S_name_on_badge: group.get('badgeName')?.value,
         S_job_title: group.get('jobTitle')?.value,
         S_country: group.get('country')?.value,

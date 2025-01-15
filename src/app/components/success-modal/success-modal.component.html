@@ -1,0 +1,33 @@
+<div
+  class="d-flex justify-content-center align-items-center flex-column pt-5 pb-3 gap-5"
+>
+  <div class="row d-flex justify-content-center align-items-center">
+    <p class="text-center text-secondary fs-6 fw-semibold m-0 px-3 py-2">
+      Registration Completed
+    </p>
+    <div class="row d-flex">
+      <p class="text-center text-secondary fs-6 fw-normal m-0 px-3 py-2">
+        Your unique code is
+      </p>
+      <p
+        class="unique-code text-center text-primary fs-3 fw-bold m-0 px-3 py-2"
+      >
+        {{ uniqueId$ | async }}
+      </p>
+    </div>
+  </div>
+
+  <div class="row align-items-center d-flex justify-content-center gap-2">
+    <app-ui-button (click)="activeModal.dismiss('Cross click')"
+      >Save as Image</app-ui-button
+    >
+
+    <button
+      type="button"
+      class="btn text-primary shadow-none d-flex w-auto mt-1"
+      (click)="activeModal.dismiss('close click')"
+    >
+      Back to Home
+    </button>
+  </div>
+</div>

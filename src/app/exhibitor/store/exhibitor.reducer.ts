@@ -22,12 +22,12 @@ export interface ExhibitorState {
   addingExhibitor: boolean;
   addExhibitorError: any;
   AddMultipleExhibitorsError: string | null;
+  lastAddMultipleExhibitorResponse: any[];
   lastAddExhibitorResponse: any;
 
   provinces: Province[];
   loading: boolean;
   error: any;
-
 }
 
 export const initialExhibitorState: ExhibitorState = {
@@ -39,10 +39,11 @@ export const initialExhibitorState: ExhibitorState = {
   addExhibitorError: null,
   AddMultipleExhibitorsError: '',
   lastAddExhibitorResponse: null,
+  lastAddMultipleExhibitorResponse: [],
 
   provinces: [],
   loading: false,
-  error: null
+  error: null,
 };
 
 export const exhibitorReducer = createReducer(
@@ -83,6 +84,7 @@ export const exhibitorReducer = createReducer(
   on(addMultipleExhibitorsSuccess, (state, { responses }) => ({
     ...state,
     error: null,
+    lastAddMultipleExhibitorResponse: responses,
   })),
   on(addMultipleExhibitorsFailure, (state, { error }) => ({
     ...state,
@@ -92,16 +94,16 @@ export const exhibitorReducer = createReducer(
   on(loadProvinces, (state) => ({
     ...state,
     loading: true,
-    AddMultipleExhibitorsError: null
+    AddMultipleExhibitorsError: null,
   })),
   on(loadProvincesSuccess, (state, { provinces }) => ({
     ...state,
     loading: false,
-    provinces: provinces
+    provinces: provinces,
   })),
   on(loadProvincesFailure, (state, { error }) => ({
     ...state,
     loading: false,
-    error
+    error,
   }))
 );

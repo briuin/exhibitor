@@ -53,22 +53,39 @@ export class ExhibitorEffects {
       ofType(addMultipleExhibitors),
       mergeMap((action) => {
         const apiCalls = action.exhibitors.map((exhibitor) =>
-            this.exhibitorService.addExhibitor(exhibitor).pipe(
-                map((response) => addExhibitorSuccess({ response })),
-                catchError((error) => of(addExhibitorFailure({ error })))
-              )
+          this.exhibitorService.addExhibitor(exhibitor).pipe(
+            map((response) => ({ response, exhibitor })),
+            catchError((error) => of({ error, exhibitor }))
+          )
         );
 
         return forkJoin(apiCalls).pipe(
-          map((responses) => {
-            const errors = responses.filter((res: any) => res?.error);
-            if (errors.length) {
-              return addMultipleExhibitorsFailure({ error: errors });
+          map((results) => {
+            const successes = results.filter((res: any) => !res.error);
+            const failures = results.filter((res: any) => res.error);
+
+            if (failures.length) {
+              return addMultipleExhibitorsFailure({
+                error: failures.map((failure) => ({
+                  error: (failure as any).error,
+                  exhibitor: failure.exhibitor,
+                })),
+              });
             }
-            return addMultipleExhibitorsSuccess({ responses });
+
+            return addMultipleExhibitorsSuccess({
+              responses: successes.map((success) => ({
+                response: (success as any).response,
+                exhibitor: success.exhibitor,
+              })),
+            });
           }),
           catchError((error) =>
-            of(addMultipleExhibitorsFailure({ error }))
+            of(
+              addMultipleExhibitorsFailure({
+                error: `Unexpected error: ${error.message}`,
+              })
+            )
           )
         );
       })
