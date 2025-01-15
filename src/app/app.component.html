@@ -1,6 +1,6 @@
-<div class="position-relative bg-light">
+<div class="position-relative pb-5">
   <div class="d-flex">
-    <img src="images/banner.png" style="width: 100%;height: 100%;"/>
+    <img src="images/banner.png" style="width: 100%; height: 100%" />
   </div>
   <div class="container-fluid py-3">
     <p class="text-primary fs-5 fw-semibold m-0 px-3 py-2">
@@ -48,7 +48,7 @@
         <div class="text-secondary fs-6 fw-normal m-0 py-0">
           * All fields are mandatory.
         </div>
-        <div formArrayName="groups" class="gap-4 row">
+        <div formArrayName="groups" class="gap-4 row justify-content-center">
           <app-exhibitor-form
             *ngFor="let group of exhibitorFormGroups; let i = index"
             [group]="group"
@@ -57,20 +57,17 @@
             (remove)="removeGroup(i)"
           ></app-exhibitor-form>
 
-          <div class="row">
-            <div class="position-relative col-2 row">
-              <div
-                class="position-absolute rounded-circle border border-1 border-white border-opacity-10 col-9"
-              ></div>
-            </div>
-            <p
-              (click)="addGroup()"
-              class="text-primary fs-6 fw-medium col-10 m-0 px-3 py-2"
-            >
-              Add Exhibitor
-            </p>
-          </div>
+          <button
+            type="button"
+            class="btn text-primary shadow-none d-flex w-auto mt-1"
+            (click)="addGroup()"
+          >
+            Add Exhibitor
+          </button>
         </div>
+      </div>
+      <app-ui-dividers></app-ui-dividers>
+      <div class="px-3 pt-2">
         <app-ui-button (click)="register()">Register</app-ui-button>
       </div>
     </ng-container>

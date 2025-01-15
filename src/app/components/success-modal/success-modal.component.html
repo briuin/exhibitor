@@ -1,7 +1,7 @@
 <div
   class="d-flex justify-content-center align-items-center flex-column pt-5 pb-3 gap-5"
 >
-  <div class="row d-flex justify-content-center align-items-center">
+  <div class="row d-flex justify-content-center align-items-center" #uniqueCode>
     <p class="text-center text-secondary fs-6 fw-semibold m-0 px-3 py-2">
       Registration Completed
     </p>
@@ -12,15 +12,13 @@
       <p
         class="unique-code text-center text-primary fs-3 fw-bold m-0 px-3 py-2"
       >
-        {{ uniqueId$ | async }}
+        {{ uniqueId }}
       </p>
     </div>
   </div>
 
   <div class="row align-items-center d-flex justify-content-center gap-2">
-    <app-ui-button (click)="activeModal.dismiss('Cross click')"
-      >Save as Image</app-ui-button
-    >
+    <app-ui-button (click)="downloadImage()">Save as Image</app-ui-button>
 
     <button
       type="button"
