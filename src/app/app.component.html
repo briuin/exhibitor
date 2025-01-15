@@ -41,11 +41,33 @@
     </div>
 
     <ng-container
-      *ngIf="form.get('company')?.value && form.get('eventType')?.value"
+      *ngIf="
+        (form.get('company')?.value && form.get('eventType')?.value)
+      "
     >
       <app-ui-dividers></app-ui-dividers>
       <div class="px-3">
-        <div class="text-secondary fs-6 fw-normal m-0 py-0">
+        <div class="px-1 py-3 bg-danger-subtle rounded-3 row w-100 m-auto mb-3" *ngIf="((addExhibitorErrors$ | async)?.length || 0) > 0">
+          <span class="text-danger fs-6 fw-semibold m-0">
+            {{ (addExhibitorErrors$ | async)?.length }} out of
+            {{ (addExhibitorAPIResult$ | async)?.length }} submissions have
+            failed.
+          </span>
+          <span class="text-danger fs-6 fw-normal m-0">
+            To view your badge collection code, you may edit or remove your
+            entries, and click Register. 
+          </span>
+        </div>
+
+        <div class="w-100 d-flex flex-column" *ngIf="((addExhibitorErrors$ | async)?.length || 0) > 0">
+          <span class="text-danger fs-6 fw-semibold">Note:</span>
+          <span class="text-secondary fs-6 fw-normal">
+            Do not refresh the page, as doing so may result in the loss of all
+            your records.
+          </span>
+        </div>
+
+        <div class="text-secondary fs-6 fw-normal m-0 py-0" *ngIf="((addExhibitorErrors$ | async)?.length || 0) === 0">
           * All fields are mandatory.
         </div>
         <div formArrayName="groups" class="gap-4 row justify-content-center">
@@ -54,6 +76,7 @@
             [group]="group"
             [index]="i"
             [provincesOptions]="(provincesOptions$ | async)!"
+            [error]="getErrorMessage(i) | async"
             (remove)="removeGroup(i)"
           ></app-exhibitor-form>
 
@@ -76,7 +99,7 @@
 
 <div
   class="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 bg-light bg-opacity-75"
-  *ngIf="(isAdding$ | async)"
+  *ngIf="isAdding$ | async"
   style="z-index: 1050"
 >
   <div class="progress w-75" style="height: 30px">

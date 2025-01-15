@@ -22,7 +22,7 @@ export interface ExhibitorState {
 
   addingExhibitor: boolean;
   addExhibitorError: any;
-  AddMultipleExhibitorsError: string | null;
+  AddMultipleExhibitorsErrors: any[];
   lastAddMultipleExhibitorResponse: any[];
   lastAddExhibitorResponse: any;
   progress: number;
@@ -40,7 +40,7 @@ export const initialExhibitorState: ExhibitorState = {
 
   addingExhibitor: false,
   addExhibitorError: null,
-  AddMultipleExhibitorsError: '',
+  AddMultipleExhibitorsErrors: [],
   lastAddExhibitorResponse: null,
   lastAddMultipleExhibitorResponse: [],
   progress: 0,
@@ -93,7 +93,7 @@ export const exhibitorReducer = createReducer(
   })),
   on(addMultipleExhibitorsFailure, (state, { error }) => ({
     ...state,
-    AddMultipleExhibitorsError: 'One or more API calls failed',
+    AddMultipleExhibitorsErrors: error,
   })),
 
   on(loadProvinces, (state) => ({

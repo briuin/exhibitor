@@ -26,14 +26,20 @@ export const selectAddExhibitorError = createSelector(
   (state) => state.addExhibitorError
 );
 
-export const selectAddMultipleExhibitorError = createSelector(
+export const selectAddMultipleExhibitorErrors = createSelector(
   selectExhibitorState,
-  (state) => state.AddMultipleExhibitorsError
+  (state) => state.AddMultipleExhibitorsErrors
 );
 export const selectLastAddExhibitorResponse = createSelector(
   selectExhibitorState,
   (state) => state.lastAddExhibitorResponse
 );
+
+export const selectAddExhibitorAPIResult = createSelector(
+  selectExhibitorState,
+  (state) => [...state.lastAddMultipleExhibitorResponse, ...state.AddMultipleExhibitorsErrors]
+);
+
 export const selectLastAddMultipleExhibitorResponse = createSelector(
   selectExhibitorState,
   (state) => state.lastAddMultipleExhibitorResponse

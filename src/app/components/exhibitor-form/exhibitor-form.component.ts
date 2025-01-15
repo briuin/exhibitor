@@ -21,6 +21,7 @@ export class ExhibitorFormComponent {
   @Input() group!: FormGroup;
   @Input() index!: number;
   @Input() provincesOptions: SelectOption[] = [];
+  @Input() error = '';
   @Output() remove = new EventEmitter<void>();
 
   constructor() {}

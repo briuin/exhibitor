@@ -58,9 +58,9 @@ export class ExhibitorEffects {
         const total = action.exhibitors.length;
         let completed = 0;
 
-        const apiCalls = action.exhibitors.map((exhibitor) =>
+        const apiCalls = action.exhibitors.map((exhibitor, index) =>
           this.exhibitorService.addExhibitor(exhibitor).pipe(
-            map((response) => ({ response, exhibitor })),
+            map((response) => ({ response, exhibitor, index })),
             tap(() => {
               completed++;
               this.store.dispatch(updateProgress({ completed, total }));
@@ -68,7 +68,7 @@ export class ExhibitorEffects {
             catchError((error) => {
               completed++;
               this.store.dispatch(updateProgress({ completed, total }));
-              return of({ error, exhibitor });
+              return of({ error, exhibitor, index });
             })
           )
         );
@@ -81,8 +81,9 @@ export class ExhibitorEffects {
             if (failures.length) {
               return addMultipleExhibitorsFailure({
                 error: failures.map((failure) => ({
-                  error: (failure as any).error,
+                  error: (failure as any).error?.error,
                   exhibitor: failure.exhibitor,
+                  index: failure.index,
                 })),
               });
             }
@@ -91,6 +92,7 @@ export class ExhibitorEffects {
               responses: successes.map((success) => ({
                 response: (success as any).response,
                 exhibitor: success.exhibitor,
+                index: success.index,
               })),
             });
           }),

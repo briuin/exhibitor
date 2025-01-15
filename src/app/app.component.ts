@@ -6,8 +6,10 @@ import {
   loadProvinces,
 } from './exhibitor/store/exhibitor.actions';
 import {
+  selectAddExhibitorAPIResult,
   selectAddExhibitorIsLoading,
   selectAddExhibitorProgress,
+  selectAddMultipleExhibitorErrors,
   selectCompanies,
   selectLastAddMultipleExhibitorResponse,
   selectProvinces,
@@ -15,7 +17,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { UiButtonComponent } from './ui/ui-button/ui-button.component';
 import { AddExhibitorHttpRequest } from './exhibitor/exhibitor.model';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { UiCardComponent } from './ui/ui-card/ui-card.component';
 import { UiRadioComponent } from './ui/ui-radio/ui-radio.component';
 import { UiSelectComponent } from './ui/ui-select/ui-select.component';
@@ -59,6 +61,9 @@ export class AppComponent {
 
   isAdding$!: Observable<boolean>;
   progress$!: Observable<number>;
+
+  addExhibitorAPIResult$!: Observable<any[]>;
+  addExhibitorErrors$!: Observable<any[]>;
 
   get formGroups(): FormArray {
     return this.form.get('groups') as FormArray;
@@ -107,6 +112,19 @@ export class AppComponent {
 
     this.isAdding$ = this.store.select(selectAddExhibitorIsLoading);
     this.progress$ = this.store.select(selectAddExhibitorProgress);
+    this.addExhibitorAPIResult$ = this.store.select(
+      selectAddExhibitorAPIResult
+    );
+
+    this.addExhibitorErrors$ = this.store.select(
+      selectAddMultipleExhibitorErrors
+    );
+  }
+
+  getErrorMessage(index: number) {
+    return this.addExhibitorAPIResult$.pipe(
+      map((result) => result.find((x) => x.index === index && x.error)?.error?.message)
+    );
   }
 
   onExhibitorsAddedSuccess(): void {
@@ -157,7 +175,6 @@ export class AppComponent {
   }
 
   register() {
-
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
