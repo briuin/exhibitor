@@ -22,7 +22,6 @@ import { map } from 'rxjs';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  title = 'exhibitor';
   companies$;
   provinces$;
 
@@ -40,7 +39,7 @@ export class AppComponent {
       S_added_via: 'Web Form',
       S_company: company,
       S_email_address: 'test',
-      S_group_reg_id: 'test',
+      S_group_reg_id: this.generateRandomString(),
       S_name_on_badge: 'test',
       S_job_title: 'test',
       S_country: 'test',
@@ -50,5 +49,11 @@ export class AppComponent {
     };
 
     this.store.dispatch(addExhibitor({ exhibitor: body }));
+  }
+
+  generateRandomString(): string {
+    return Array.from({ length: 5 }, () =>
+      String.fromCharCode(65 + Math.floor(Math.random() * 26))
+    ).join('');
   }
 }
