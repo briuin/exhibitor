@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   addMultipleExhibitors,
@@ -11,7 +11,6 @@ import {
   selectAddExhibitorProgress,
   selectAddMultipleExhibitorErrors,
   selectCompanies,
-  selectLastAddMultipleExhibitorResponse,
   selectProvinces,
 } from './exhibitor/store/exhibitor.selectors';
 import { CommonModule } from '@angular/common';
@@ -102,19 +101,29 @@ export class AppComponent {
 
     this.addGroup();
 
-    this.store
-      .select(selectLastAddMultipleExhibitorResponse)
-      .subscribe((responses) => {
-        if (responses && responses.length > 0) {
-          this.onExhibitorsAddedSuccess();
-        }
-      });
+    this.store.select(selectAddExhibitorAPIResult).subscribe((responses) => {
+      if (
+        responses &&
+        responses.length > 0 &&
+        !responses.find((x) => x.error)
+      ) {
+        this.onExhibitorsAddedSuccess();
+      }
+    });
 
     this.isAdding$ = this.store.select(selectAddExhibitorIsLoading);
     this.progress$ = this.store.select(selectAddExhibitorProgress);
-    this.addExhibitorAPIResult$ = this.store.select(
-      selectAddExhibitorAPIResult
-    );
+    this.addExhibitorAPIResult$ = this.store
+      .select(selectAddExhibitorAPIResult)
+      .pipe(
+        tap((result) => {
+          result.forEach((x) => {
+            if (!x.error) {
+              this.formGroups.controls[x.index].get('done')?.setValue(true);
+            }
+          });
+        })
+      );
 
     this.addExhibitorErrors$ = this.store.select(
       selectAddMultipleExhibitorErrors
@@ -123,13 +132,17 @@ export class AppComponent {
 
   getErrorMessage(index: number) {
     return this.addExhibitorAPIResult$.pipe(
-      map((result) => result.find((x) => x.index === index && x.error)?.error?.message)
+      map(
+        (result) =>
+          result.find((x) => x.index === index && x.error)?.error?.message
+      )
     );
   }
 
   onExhibitorsAddedSuccess(): void {
     this.modalService.open(SuccessModalComponent, {
       centered: true,
+      backdrop: 'static',
     });
   }
 
@@ -182,22 +195,24 @@ export class AppComponent {
 
     const uniqueId = this.generateRandomString();
 
-    const requests = this.formGroups.controls.map((group) => {
-      const body: AddExhibitorHttpRequest = {
-        S_added_via: 'Web Form',
-        S_company: this.form.get('company')?.value,
-        S_email_address: group.get('email')?.value,
-        S_group_reg_id: uniqueId,
-        S_name_on_badge: group.get('badgeName')?.value,
-        S_job_title: group.get('jobTitle')?.value,
-        S_country: group.get('country')?.value,
-        S_company_on_badge: group.get('badgeCompany')?.value,
-        SB_event_fha: group.get('eventType')?.value === EventType.FHA,
-        SB_event_prowine:
-          this.form.get('eventType')?.value === EventType.Prowine,
-      };
-      return body;
-    });
+    const requests = this.formGroups.controls
+      .filter((group) => !group.get('done')?.value)
+      .map((group, i) => {
+        const body: AddExhibitorHttpRequest = {
+          S_added_via: 'Web Form',
+          S_company: this.form.get('company')?.value,
+          S_email_address: group.get('email')?.value,
+          S_group_reg_id: uniqueId,
+          S_name_on_badge: group.get('badgeName')?.value,
+          S_job_title: group.get('jobTitle')?.value,
+          S_country: group.get('country')?.value,
+          S_company_on_badge: group.get('badgeCompany')?.value,
+          SB_event_fha: group.get('eventType')?.value === EventType.FHA,
+          SB_event_prowine:
+            this.form.get('eventType')?.value === EventType.Prowine,
+        };
+        return body;
+      });
 
     this.store.dispatch(addMultipleExhibitors({ exhibitors: requests }));
   }
@@ -209,6 +224,7 @@ export class AppComponent {
       country: ['', Validators.required],
       badgeCompany: ['', Validators.required],
       jobTitle: ['', Validators.required],
+      done: [false],
     });
   }
 

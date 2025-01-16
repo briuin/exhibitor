@@ -41,4 +41,9 @@ export class SuccessModalComponent {
       link.click();
     });
   }
+
+  closeModal() {
+    this.activeModal.dismiss('close click');
+    location.reload();
+  }
 }
