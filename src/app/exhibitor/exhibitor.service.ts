@@ -8,10 +8,11 @@ import {
   ExhibitorHttpResponse,
   Province,
 } from './exhibitor.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ExhibitorService {
-  private baseUrl = 'https://staging-fha-2024.occamlab.com.sg/api';
+  private baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
