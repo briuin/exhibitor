@@ -212,7 +212,7 @@ export class AppComponent {
           S_job_title: group.get('jobTitle')?.value,
           S_country: group.get('country')?.value,
           S_company_on_badge: group.get('badgeCompany')?.value,
-          SB_event_fha: group.get('eventType')?.value === EventType.FHA,
+          SB_event_fha: this.form.get('eventType')?.value === EventType.FHA,
           SB_event_prowine:
             this.form.get('eventType')?.value === EventType.Prowine,
         };
