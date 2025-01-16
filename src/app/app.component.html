@@ -2,18 +2,27 @@
   <div class="d-flex">
     <img src="images/banner.png" style="width: 100%; height: 100%" />
   </div>
-  <div class="container-fluid py-3" *ngIf="((addExhibitorErrors$ | async)?.length || 0) === 0">
+  <div
+    class="container-fluid py-3"
+    *ngIf="((addExhibitorErrors$ | async)?.length || 0) === 0"
+  >
     <h2 class="text-primary fs-2 fw-semibold m-0 px-1 col-11 py-2">
       Onsite Exhibitors Registration
     </h2>
   </div>
   <form [formGroup]="form">
-    <div class="justify-content-center align-items-center px-3" *ngIf="((addExhibitorErrors$ | async)?.length || 0) === 0">
+    <div
+      class="justify-content-center align-items-center px-3"
+      *ngIf="((addExhibitorErrors$ | async)?.length || 0) === 0"
+    >
       <app-ui-card>
         <div class="main-selection-body">
           <div class="d-flex flex-column gap-1">
-            <div class="text-secondary fw-medium selection-title">Event Selection</div>
-            <app-ui-radio-group formControlName="eventType" name="eventType">
+            <app-ui-radio-group
+              label="Event Selection"
+              formControlName="eventType"
+              name="eventType"
+            >
               <app-ui-radio
                 [value]="option.value"
                 *ngFor="let option of eventTypeOptions"
@@ -23,14 +32,9 @@
           </div>
 
           <div class="d-flex flex-column">
-            <div class="col-12 d-flex flex-column">
-              <div class="text-secondary fw-medium col-12 selection-title">Company</div>
-              <p class="text-secondary fw-normal col-12 selection-description">
-                If you are unable to find your company name, please approach our
-                Exhibitor Team for assistance.
-              </p>
-            </div>
             <app-ui-select
+              label="Company"
+              hint="If you are unable to find your company name, please approach our Exhibitor Team for assistance."
               formControlName="company"
               [options]="(companiesOptions$ | async)!"
               placeholder="Please Select"
@@ -77,7 +81,7 @@
         >
           * All fields are mandatory.
         </div>
-        <div formArrayName="groups" class="gap-4 row justify-content-center">
+        <div formArrayName="groups" class="gap-4 row justify-content-center a">
           <app-exhibitor-form
             *ngFor="let group of exhibitorFormGroups; let i = index"
             [group]="group"
@@ -88,13 +92,9 @@
             (remove)="removeGroup(i)"
           ></app-exhibitor-form>
 
-          <button
-            type="button"
-            class="btn text-primary shadow-none d-flex w-auto mt-1 justify-content-center align-items-center"
-            (click)="addGroup()"
-          >
+          <app-ui-button-link (click)="addGroup()" class="w-auto">
             <app-add-icon></app-add-icon> Add Exhibitor
-          </button>
+          </app-ui-button-link>
         </div>
       </div>
       <app-ui-dividers></app-ui-dividers>

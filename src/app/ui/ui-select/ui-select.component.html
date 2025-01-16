@@ -1,18 +1,37 @@
 <div class="mb-3">
-  <label *ngIf="label" class="form-label">{{ label }}</label>
-  <select
-    class="form-select"
-    [value]="value"
-    (change)="onInputChange($event)"
-    [class.is-invalid]="
-      ngControl?.invalid && (ngControl?.touched || ngControl?.dirty)
-    "
-  >
-    <option *ngIf="placeholder && !value" selected>{{ placeholder }}</option>
-    <option *ngFor="let option of options" [value]="option.value">
-      {{ option.label }}
-    </option>
-  </select>
+  <label *ngIf="label" class="form-label mb-0">{{ label }}</label>
+
+  <p *ngIf="hint" class="text-secondary fw-normal col-12 selection-description">
+    {{ hint }}
+  </p>
+
+  <div ngbDropdown #dropdown="ngbDropdown" class="dropdown w-100">
+    <button
+      class="btn shadow-none bg-white rounded-2 border border-1 w-100 d-flex justify-content-between align-items-center dropdown-header-menu"
+      ngbDropdownToggle
+      type="button"
+    >
+      <span>{{
+        selectedOption?.label || placeholder || "Select an option"
+      }}</span>
+      <span>
+        <app-arrow-up-icon *ngIf="isOpened"></app-arrow-up-icon>
+        <app-arrow-down-icon *ngIf="!isOpened"></app-arrow-down-icon>
+      </span>
+    </button>
+
+    <div ngbDropdownMenu aria-labelledby="dropdownBasic" class="w-100">
+      <button
+        *ngFor="let option of options"
+        class="dropdown-item"
+        type="button"
+        (click)="selectOption(option)"
+        [class.selected]="option.value === selectedOption?.value"
+      >
+        {{ option.label }}
+      </button>
+    </div>
+  </div>
 
   <div
     class="invalid-feedback"

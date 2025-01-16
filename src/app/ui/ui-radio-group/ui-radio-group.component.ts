@@ -27,6 +27,7 @@ export class UiRadioGroupComponent
   implements ControlValueAccessor, AfterContentInit
 {
   @Input() name: string = '';
+  @Input() label: string = '';
 
   @ContentChildren(UiRadioComponent) radios!: QueryList<UiRadioComponent>;
 

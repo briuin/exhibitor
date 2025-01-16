@@ -35,6 +35,7 @@ import { ExhibitorFormComponent } from './components/exhibitor-form/exhibitor-fo
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SuccessModalComponent } from './components/success-modal/success-modal.component';
 import { AddIconComponent } from "./ui/icons/add-icon/add-icon.component";
+import { UiButtonLinkComponent } from "./ui/ui-button-link/ui-button-link.component";
 
 @Component({
   selector: 'app-root',
@@ -49,7 +50,8 @@ import { AddIconComponent } from "./ui/icons/add-icon/add-icon.component";
     ExhibitorFormComponent,
     ReactiveFormsModule,
     ExhibitorFormComponent,
-    AddIconComponent
+    AddIconComponent,
+    UiButtonLinkComponent
 ],
   standalone: true,
   templateUrl: './app.component.html',

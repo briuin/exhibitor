@@ -6,10 +6,11 @@ import { selectLastAddMultipleExhibitorResponse } from '../../exhibitor/store/ex
 import { filter, map, Observable, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import html2canvas from 'html2canvas';
+import { UiButtonLinkComponent } from "../../ui/ui-button-link/ui-button-link.component";
 
 @Component({
   selector: 'app-success-modal',
-  imports: [UiButtonComponent, CommonModule],
+  imports: [UiButtonComponent, CommonModule, UiButtonLinkComponent],
   standalone: true,
   templateUrl: './success-modal.component.html',
   styleUrl: './success-modal.component.scss',

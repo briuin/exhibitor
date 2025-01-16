@@ -19,13 +19,8 @@
 
   <div class="row align-items-center d-flex justify-content-center gap-2">
     <app-ui-button (click)="downloadImage()">Save as Image</app-ui-button>
-
-    <button
-      type="button"
-      class="btn text-primary shadow-none d-flex w-auto mt-1"
-      (click)="closeModal()"
+    <app-ui-button-link (click)="closeModal()" class="mt-1 w-auto"
+      >Back to Home</app-ui-button-link
     >
-      Back to Home
-    </button>
   </div>
 </div>

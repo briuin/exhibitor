@@ -6,3 +6,27 @@
   color: var(--Text-text-primary, #6e6b7b);
   font-size: 12px;
 }
+
+.dropdown-toggle::after {
+  display: none;
+}
+
+.dropdown-header-menu {
+  color: var(--Text-text-primary, #6e6b7b);
+}
+
+.dropdown-item {
+  --bs-dropdown-link-hover-bg: var(--background-red-orange-20) !important;
+  --bs-dropdown-link-color: var(--Text-text-primary, #6e6b7b) !important;
+  --bs-dropdown-link-hover-color: var(--corporate-red-orange) !important;
+
+  &.selected {
+    background-color: var(--corporate-red-orange);
+    color: white;
+  }
+}
+
+.selection-description {
+  font-size: 12px;
+  font-size: 11px;
+}
