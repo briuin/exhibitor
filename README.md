@@ -134,6 +134,7 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 
 ## Areas for Improvement
 
+- **Dropdown Style**: Align the dropdown style with the UI design.
 - **Responsive Design**: Add better mobile responsiveness with Bootstrap utilities.
 - **User Experience**: Enhance the user experience by displaying a confirmation modal when a user opens a popup or attempts to leave a page while still editing a form.
 - **Dynamic Theming**: Allow users to customize colors and themes dynamically.
