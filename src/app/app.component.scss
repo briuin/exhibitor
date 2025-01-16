@@ -1,4 +1,13 @@
 .main-selection-body {
-    padding: 14px 14px 16px 14px;
-    gap: 14px;
+  padding: 14px 14px 16px 14px;
+  gap: 14px;
+
+  .selection-title {
+    font-size: 12px;
+  }
+
+  .selection-description {
+    font-size: 12px;
+    font-size: 11px;
+  }
 }

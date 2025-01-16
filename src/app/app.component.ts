@@ -34,6 +34,7 @@ import { SelectOption } from './models/select-option.model';
 import { ExhibitorFormComponent } from './components/exhibitor-form/exhibitor-form.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SuccessModalComponent } from './components/success-modal/success-modal.component';
+import { AddIconComponent } from "./ui/icons/add-icon/add-icon.component";
 
 @Component({
   selector: 'app-root',
@@ -48,7 +49,8 @@ import { SuccessModalComponent } from './components/success-modal/success-modal.
     ExhibitorFormComponent,
     ReactiveFormsModule,
     ExhibitorFormComponent,
-  ],
+    AddIconComponent
+],
   standalone: true,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -83,6 +85,8 @@ export class AppComponent {
     { label: 'Prowine Singapore', value: EventType.Prowine },
   ];
 
+  uniqueId = this.generateRandomString();
+
   ngOnInit(): void {
     this.store.dispatch(loadCompanies());
     this.store.dispatch(loadProvinces());
@@ -97,6 +101,7 @@ export class AppComponent {
 
     this.form.get('eventType')?.valueChanges.subscribe((value) => {
       this.loadCompanies();
+      this.form.get('company')?.setValue('');
     });
 
     this.addGroup();
@@ -193,8 +198,6 @@ export class AppComponent {
       return;
     }
 
-    const uniqueId = this.generateRandomString();
-
     const requests = this.formGroups.controls
       .filter((group) => !group.get('done')?.value)
       .map((group, i) => {
@@ -202,7 +205,7 @@ export class AppComponent {
           S_added_via: 'Web Form',
           S_company: this.form.get('company')?.value,
           S_email_address: group.get('email')?.value,
-          S_group_reg_id: uniqueId,
+          S_group_reg_id: this.uniqueId,
           S_name_on_badge: group.get('badgeName')?.value,
           S_job_title: group.get('jobTitle')?.value,
           S_country: group.get('country')?.value,

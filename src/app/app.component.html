@@ -3,16 +3,16 @@
     <img src="images/banner.png" style="width: 100%; height: 100%" />
   </div>
   <div class="container-fluid py-3" *ngIf="((addExhibitorErrors$ | async)?.length || 0) === 0">
-    <p class="text-primary fs-5 fw-semibold m-0 px-3 py-2">
+    <h2 class="text-primary fs-2 fw-semibold m-0 px-1 col-11 py-2">
       Onsite Exhibitors Registration
-    </p>
+    </h2>
   </div>
   <form [formGroup]="form">
     <div class="justify-content-center align-items-center px-3" *ngIf="((addExhibitorErrors$ | async)?.length || 0) === 0">
       <app-ui-card>
         <div class="main-selection-body">
           <div class="d-flex flex-column gap-1">
-            <div class="text-secondary fs-6 fw-medium">Event Selection</div>
+            <div class="text-secondary fw-medium selection-title">Event Selection</div>
             <app-ui-radio-group formControlName="eventType" name="eventType">
               <app-ui-radio
                 [value]="option.value"
@@ -24,8 +24,8 @@
 
           <div class="d-flex flex-column">
             <div class="col-12 d-flex flex-column">
-              <div class="text-secondary fs-6 fw-medium col-12">Company</div>
-              <p class="text-secondary fs-6 fw-normal col-12">
+              <div class="text-secondary fw-medium col-12 selection-title">Company</div>
+              <p class="text-secondary fw-normal col-12 selection-description">
                 If you are unable to find your company name, please approach our
                 Exhibitor Team for assistance.
               </p>
@@ -46,15 +46,15 @@
       <app-ui-dividers></app-ui-dividers>
       <div class="px-3">
         <div
-          class="px-1 py-3 bg-danger-subtle rounded-3 row w-100 m-auto mb-3"
+          class="px-1 py-3 bg-primary-subtle rounded-3 row w-100 m-auto mb-3"
           *ngIf="((addExhibitorErrors$ | async)?.length || 0) > 0"
         >
-          <span class="text-danger fs-6 fw-semibold m-0">
+          <span class="text-primary fs-6 fw-semibold m-0">
             {{ (addExhibitorErrors$ | async)?.length }} out of
             {{ (addExhibitorAPIResult$ | async)?.length }} submissions have
             failed.
           </span>
-          <span class="text-danger fs-6 fw-normal m-0">
+          <span class="text-primary fs-6 fw-normal m-0">
             To view your badge collection code, you may edit or remove your
             entries, and click Register. 
           </span>
@@ -64,7 +64,7 @@
           class="w-100 d-flex flex-column"
           *ngIf="((addExhibitorErrors$ | async)?.length || 0) > 0"
         >
-          <span class="text-danger fs-6 fw-semibold">Note:</span>
+          <span class="text-primary fs-6 fw-semibold">Note:</span>
           <span class="text-secondary fs-6 fw-normal">
             Do not refresh the page, as doing so may result in the loss of all
             your records.
@@ -90,10 +90,10 @@
 
           <button
             type="button"
-            class="btn text-primary shadow-none d-flex w-auto mt-1"
+            class="btn text-primary shadow-none d-flex w-auto mt-1 justify-content-center align-items-center"
             (click)="addGroup()"
           >
-            Add Exhibitor
+            <app-add-icon></app-add-icon> Add Exhibitor
           </button>
         </div>
       </div>

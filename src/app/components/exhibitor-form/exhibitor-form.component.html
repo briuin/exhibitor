@@ -1,16 +1,17 @@
 <app-ui-card [formGroup]="group" class="mb-3">
   <div
-    class="px-1 py-1 bg-danger-subtle rounded-top--3 row justify-content-between m-0"
+    class="px-1 py-1 bg-primary-subtle rounded-top--3 row justify-content-between m-0"
   >
     <p class="text-secondary fs-6 fw-semibold col m-0 px-3 py-2">
       Exhibitor #{{ index + 1 }}
     </p>
-    <p
+    <span
       class="text-end text-primary fs-6 fw-normal text-decoration-underline col m-0 px-3 py-2"
       (click)="onRemoveClick()"
+      style="cursor: pointer;"
     >
       Remove
-    </p>
+    </span>
   </div>
 
   <div class="form-body">
